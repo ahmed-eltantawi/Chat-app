@@ -22,7 +22,7 @@ class ChatView extends StatelessWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          return BubbleChat(massage: 'Hello this 2222world');
+          return BubbleChat(massage: 'Hello this 1111world');
         },
       ),
     );
