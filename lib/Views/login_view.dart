@@ -1,3 +1,4 @@
+import 'package:chat_with_me_now/Views/chat_view.dart';
 import 'package:chat_with_me_now/Views/register_view.dart';
 import 'package:chat_with_me_now/Widgets/custom_bottom.dart';
 import 'package:chat_with_me_now/Widgets/custom_text_field.dart';
@@ -64,6 +65,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   SizedBox(height: 15),
                   CustomFormTextField(
+                    hide: true,
                     hintText: 'Password',
                     onChanged: (value) {
                       password = value;
@@ -79,6 +81,11 @@ class _LoginViewState extends State<LoginView> {
                         });
                         try {
                           await userLogin(context, email!, password!);
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   ChatView.id,
+                          //   arguments: email,
+                          // );
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'user-not-found') {
                             showSnackBar(
@@ -116,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.pushNamed(context, RegisterView.id);
                         },
                         child: Text(
-                          "Register Now",
+                          "Register",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,

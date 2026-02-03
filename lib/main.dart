@@ -1,4 +1,5 @@
 import 'package:chat_with_me_now/Views/chat_view.dart';
+import 'package:chat_with_me_now/Views/friends_view.dart';
 import 'package:chat_with_me_now/Views/login_view.dart';
 import 'package:chat_with_me_now/Views/register_view.dart';
 import 'package:chat_with_me_now/firebase_options.dart';
@@ -21,10 +22,11 @@ class ChatApp extends StatelessWidget {
         ChatView.id: (context) => ChatView(),
         LoginView.id: (context) => LoginView(),
         RegisterView.id: (context) => RegisterView(),
+        FriendsView.id: (context) => FriendsView(),
       },
-      initialRoute: ChatView.id,
-
-      // LoginView.id,
+      initialRoute:
+          //  FriendsView.id,
+          LoginView.id,
     );
   }
 }

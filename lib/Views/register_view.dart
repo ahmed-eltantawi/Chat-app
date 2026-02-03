@@ -1,8 +1,10 @@
 import 'package:chat_with_me_now/Widgets/custom_bottom.dart';
 import 'package:chat_with_me_now/Widgets/custom_text_field.dart';
 import 'package:chat_with_me_now/helper/consts.dart';
+import 'package:chat_with_me_now/helper/extensions.dart';
 import 'package:chat_with_me_now/helper/show_snack_bar.dart';
 import 'package:chat_with_me_now/helper/user_login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -16,9 +18,13 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  CollectionReference users = FirebaseFirestore.instance.collection(
+    kFriendsCollection,
+  );
   String? email;
 
   String? password;
+  String? userName;
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
@@ -61,6 +67,13 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   SizedBox(height: 10),
                   CustomFormTextField(
+                    hintText: 'Your Name',
+                    onChanged: (value) {
+                      userName = value.capitalize();
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  CustomFormTextField(
                     hintText: 'Email',
                     onChanged: (value) {
                       email = value;
@@ -68,6 +81,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   SizedBox(height: 15),
                   CustomFormTextField(
+                    hide: true,
                     hintText: 'Password',
                     onChanged: (value) {
                       password = value;
@@ -85,6 +99,7 @@ class _RegisterViewState extends State<RegisterView> {
                           await registerUser();
                           Navigator.pop(context);
                           await userLogin(context, email!, password!);
+                          users.add({'id': email, 'name': userName});
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             showSnackBar(

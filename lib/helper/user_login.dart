@@ -10,6 +10,8 @@ Future<void> userLogin(
 ) async {
   UserCredential userCredential = await FirebaseAuth.instance
       .signInWithEmailAndPassword(email: email, password: password);
-  Navigator.pushNamed(context, ChatView.id);
-  showSnackBar(context, 'successful');
+  Navigator.pushNamed(context, ChatView.id, arguments: email);
+
+  // Navigator.pushNamed(context, ChatView.id);
+  // showSnackBar(context, 'successful');
 }

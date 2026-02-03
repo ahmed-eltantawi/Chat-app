@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:chat_with_me_now/Widgets/bubble_chat.dart';
+import 'package:chat_with_me_now/Widgets/chat_bubble.dart';
 import 'package:chat_with_me_now/helper/consts.dart';
 import 'package:chat_with_me_now/models/massage_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,13 +27,13 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
+    var email = ModalRoute.of(context)!.settings.arguments;
     return StreamBuilder<QuerySnapshot>(
       stream: massages
           .orderBy(kCreatedAtCollection, descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          log('Something went wrong');
           return Text('Something went wrong');
         }
 
@@ -76,7 +76,9 @@ class _ChatViewState extends State<ChatView> {
                         controller: _scrollController,
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          return BubbleChat(massage: massagesList[index]);
+                          return massagesList[index].id == email
+                              ? MyChatBubble(massage: massagesList[index])
+                              : FriendChatBubble(massage: massagesList[index]);
                         },
                       ),
                     ),
@@ -96,6 +98,7 @@ class _ChatViewState extends State<ChatView> {
                           massages.add({
                             'text': value,
                             kCreatedAtCollection: DateTime.now(),
+                            'id': email,
                           });
                           controller.clear();
                           _scrollController.animateTo(
