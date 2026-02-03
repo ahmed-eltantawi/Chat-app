@@ -14,18 +14,9 @@ class ChatView extends StatefulWidget {
   State<ChatView> createState() => _ChatViewState();
 }
 
+final ScrollController _scrollController = ScrollController();
+
 class _ChatViewState extends State<ChatView> {
-  final ScrollController _scrollController = ScrollController();
-  final double _height = 100.0;
-
-  void _animateToIndex(int index) {
-    _scrollController.animateTo(
-      index * _height,
-      duration: Duration(seconds: 2),
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
   CollectionReference massages = FirebaseFirestore.instance.collection(
     kMassagesCollection,
   );
@@ -37,7 +28,9 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: massages.orderBy(kCreatedAtCollection).snapshots(),
+      stream: massages
+          .orderBy(kCreatedAtCollection, descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           log('Something went wrong');
@@ -79,6 +72,7 @@ class _ChatViewState extends State<ChatView> {
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        reverse: true,
                         controller: _scrollController,
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
@@ -96,12 +90,19 @@ class _ChatViewState extends State<ChatView> {
                       child: TextField(
                         controller: controller,
                         onSubmitted: (value) {
+                          if (value == '') {
+                            return;
+                          }
                           massages.add({
                             'text': value,
                             kCreatedAtCollection: DateTime.now(),
                           });
-                          _animateToIndex(10);
                           controller.clear();
+                          _scrollController.animateTo(
+                            0,
+                            duration: Duration(milliseconds: 3000),
+                            curve: Curves.fastOutSlowIn,
+                          );
                         },
                         decoration: InputDecoration(
                           hintText: 'Sent Massage',
