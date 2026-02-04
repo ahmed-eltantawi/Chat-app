@@ -24,9 +24,8 @@ class ChatApp extends StatelessWidget {
         RegisterView.id: (context) => RegisterView(),
         FriendsView.id: (context) => FriendsView(),
       },
-      initialRoute:
-          //  FriendsView.id,
-          LoginView.id,
+      initialRoute: FriendsView.id,
+      // LoginView.id,
     );
   }
 }

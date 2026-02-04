@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:chat_with_me_now/Views/chat_view_between_two.dart';
 import 'package:chat_with_me_now/helper/consts.dart';
 import 'package:chat_with_me_now/models/friend_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -44,7 +45,7 @@ class FriendsView extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      return FriendWidget(name: friendList[index]);
+                      return FriendWidget(friendModel: friendList[index]);
                     },
                   ),
                 ),
@@ -55,18 +56,43 @@ class FriendsView extends StatelessWidget {
 }
 
 class FriendWidget extends StatelessWidget {
-  const FriendWidget({super.key, required this.name});
-  final FriendModel name;
+  FriendWidget({super.key, required this.friendModel});
+
+  final FriendModel friendModel;
+  final String userEmail = 'ahmed@gmail.com';
+  late String chatId;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Container(
-        height: 50,
-        width: double.infinity,
-        color: Colors.grey,
-        child: Center(child: Text(name.name)),
+      child: GestureDetector(
+        onTap: () {
+          getChatId();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return ChatViewBetweenTwo(email: userEmail, chatId: chatId);
+              },
+            ),
+          );
+        },
+        child: Container(
+          height: 50,
+          width: double.infinity,
+          color: Colors.grey,
+          child: Center(child: Text(friendModel.name)),
+        ),
       ),
     );
+  }
+
+  void getChatId() {
+    if (userEmail.toLowerCase().compareTo(friendModel.id.toLowerCase()) < 0) {
+      chatId = userEmail + friendModel.id;
+    } else {
+      chatId = friendModel.id + userEmail;
+    }
   }
 }

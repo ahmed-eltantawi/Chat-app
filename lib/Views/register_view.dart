@@ -76,7 +76,7 @@ class _RegisterViewState extends State<RegisterView> {
                   CustomFormTextField(
                     hintText: 'Email',
                     onChanged: (value) {
-                      email = value;
+                      email = value.toLowerCase();
                     },
                   ),
                   SizedBox(height: 15),
