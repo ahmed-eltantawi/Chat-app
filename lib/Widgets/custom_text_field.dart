@@ -7,32 +7,42 @@ class CustomFormTextField extends StatelessWidget {
     this.onChanged,
     this.hide = false,
   });
-  final String? hintText;
+  final String hintText;
   final Function(String)? onChanged;
   final bool hide;
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      style: TextStyle(color: Colors.white),
-      obscureText: hide,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return "Field is required";
-        }
-        return null;
-      },
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        hint: Text(
-          "$hintText",
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.tertiary,
+      ),
+      child: TextFormField(
+        cursorColor: Theme.of(context).colorScheme.primary,
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        obscureText: hide,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Field is required";
+          }
+          return null;
+        },
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.inversePrimary,
+              width: 2,
+            ),
+          ),
+          contentPadding: EdgeInsets.only(left: 15),
+          hint: Text(
+            hintText,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 16,
+            ),
+          ),
         ),
       ),
     );

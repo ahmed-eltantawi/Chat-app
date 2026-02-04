@@ -1,5 +1,4 @@
-import 'package:chat_with_me_now/Views/chat_view.dart';
-import 'package:chat_with_me_now/helper/show_snack_bar.dart';
+import 'package:chat_with_me_now/Views/home_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +9,5 @@ Future<void> userLogin(
 ) async {
   UserCredential userCredential = await FirebaseAuth.instance
       .signInWithEmailAndPassword(email: email, password: password);
-  Navigator.pushNamed(context, ChatView.id, arguments: email);
-
-  // Navigator.pushNamed(context, ChatView.id);
-  // showSnackBar(context, 'successful');
+  Navigator.pushNamed(context, HomeView.id, arguments: email);
 }

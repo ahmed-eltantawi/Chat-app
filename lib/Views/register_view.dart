@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:chat_with_me_now/Views/error_view.dart';
 import 'package:chat_with_me_now/Widgets/custom_bottom.dart';
 import 'package:chat_with_me_now/Widgets/custom_text_field.dart';
 import 'package:chat_with_me_now/helper/consts.dart';
@@ -35,7 +38,7 @@ class _RegisterViewState extends State<RegisterView> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -49,20 +52,13 @@ class _RegisterViewState extends State<RegisterView> {
                   Text(
                     textAlign: TextAlign.center,
                     'Scalar Chat',
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: Colors.white,
-                      fontFamily: 'Pacifico',
-                    ),
+                    style: TextStyle(fontSize: 32, fontFamily: 'Pacifico'),
                   ),
                   SizedBox(height: 40),
 
                   Row(
                     children: [
-                      Text(
-                        'Register',
-                        style: TextStyle(fontSize: 25, color: Colors.white),
-                      ),
+                      Text('Register', style: TextStyle(fontSize: 25)),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -99,7 +95,11 @@ class _RegisterViewState extends State<RegisterView> {
                           await registerUser();
                           Navigator.pop(context);
                           await userLogin(context, email!, password!);
-                          users.add({'id': email, 'name': userName});
+                          users.add({
+                            'id': email,
+                            'name': userName,
+                            'createdAt': DateTime.now(),
+                          });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             showSnackBar(
@@ -118,7 +118,16 @@ class _RegisterViewState extends State<RegisterView> {
                             'There some thing Wrong, please try again',
                           );
                         }
-                      } else {}
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ErrorView();
+                            },
+                          ),
+                        );
+                      }
                       setState(() {
                         isLoading = false;
                       });
@@ -128,20 +137,14 @@ class _RegisterViewState extends State<RegisterView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Already Have an account?  ",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      Text("Already Have an account?  ", style: TextStyle()),
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
                         },
                         child: Text(
                           "Sign In",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ],

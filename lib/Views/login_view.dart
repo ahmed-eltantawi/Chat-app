@@ -1,4 +1,5 @@
-import 'package:chat_with_me_now/Views/chat_view.dart';
+import 'dart:developer';
+
 import 'package:chat_with_me_now/Views/register_view.dart';
 import 'package:chat_with_me_now/Widgets/custom_bottom.dart';
 import 'package:chat_with_me_now/Widgets/custom_text_field.dart';
@@ -7,7 +8,9 @@ import 'package:chat_with_me_now/helper/show_snack_bar.dart';
 import 'package:chat_with_me_now/helper/user_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -30,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -49,12 +52,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   Row(
-                    children: [
-                      Text(
-                        'Sign In',
-                        style: TextStyle(fontSize: 25, color: Colors.white),
-                      ),
-                    ],
+                    children: [Text('Sign In', style: TextStyle(fontSize: 25))],
                   ),
                   SizedBox(height: 10),
                   CustomFormTextField(
@@ -79,31 +77,42 @@ class _LoginViewState extends State<LoginView> {
                         setState(() {
                           isLoading = true;
                         });
-                        try {
-                          await userLogin(context, email!, password!);
-                          // Navigator.pushNamed(
-                          //   context,
-                          //   ChatView.id,
-                          //   arguments: email,
-                          // );
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'user-not-found') {
+                        final bool isConnected =
+                            await InternetConnection().hasInternetAccess;
+                        if (!isConnected) {
+                          showSnackBar(context, 'No internet connection.');
+                        } else {
+                          if (!EmailValidator.validate(email!)) {
                             showSnackBar(
                               context,
-                              'No user found for that email.',
+                              'Email is not valid email, try To enter a right one',
                             );
-                          } else if (e.code == 'invalid-credential') {
-                            showSnackBar(
-                              context,
-                              'Wrong password provided for that user.',
-                            );
+                          } else {
+                            try {
+                              await userLogin(context, email!, password!);
+                              email = '';
+                              password = '';
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'user-not-found') {
+                                showSnackBar(
+                                  context,
+                                  'No user found for that email.',
+                                );
+                              } else if (e.code == 'invalid-credential') {
+                                showSnackBar(
+                                  context,
+                                  'Wrong password provided for that user.',
+                                );
+                              }
+                            } catch (e) {
+                              showSnackBar(
+                                context,
+                                'There some thing Wrong, please try again',
+                              );
+                            }
                           }
-                        } catch (e) {
-                          showSnackBar(
-                            context,
-                            'There some thing Wrong, please try again',
-                          );
                         }
+
                         setState(() {
                           isLoading = false;
                         });
@@ -114,20 +123,14 @@ class _LoginViewState extends State<LoginView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Don't Have an account?  ",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      Text("Don't Have an account?  ", style: TextStyle()),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, RegisterView.id);
                         },
                         child: Text(
                           "Register",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ],

@@ -11,10 +11,14 @@ class ChatViewBetweenTwo extends StatefulWidget {
     super.key,
     required this.chatId,
     required this.email,
+    required this.friendName,
+    required this.friendImage,
   });
   static String id = 'ChatViewBetweenTwo';
   final String chatId;
   final String email;
+  final String friendName;
+  final CircleAvatar friendImage;
 
   @override
   State<ChatViewBetweenTwo> createState() => _ChatViewState();
@@ -27,15 +31,13 @@ class _ChatViewState extends State<ChatViewBetweenTwo> {
   late CollectionReference massages = FirebaseFirestore.instance.collection(
     widget.chatId,
   );
-  late String massage;
+  String massage = '';
   TextEditingController controller = TextEditingController();
 
   List<MassageModel> massagesList = [];
 
   @override
   Widget build(BuildContext context) {
-    // var email = ModalRoute.of(context)!.settings.arguments;
-
     return StreamBuilder<QuerySnapshot>(
       stream: massages
           .orderBy(kCreatedAtCollection, descending: true)
@@ -53,20 +55,14 @@ class _ChatViewState extends State<ChatViewBetweenTwo> {
         }
 
         return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            automaticallyImplyLeading: false,
-            iconTheme: IconThemeData(color: Colors.white),
-            backgroundColor: kPrimaryColor,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(kAppIcon, height: 65),
-                Text(
-                  "Chat",
-                  style: TextStyle(color: Colors.white, fontSize: 23),
-                ),
-              ],
-            ),
+            foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(widget.friendName, style: TextStyle(fontSize: 23)),
           ),
           body: snapshot.connectionState == ConnectionState.waiting
               ? Center(
@@ -124,7 +120,9 @@ class _ChatViewState extends State<ChatViewBetweenTwo> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: kPrimaryColor,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.inversePrimary,
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(16),

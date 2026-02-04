@@ -10,7 +10,8 @@ class CustomBottom extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.secondary,
+
           borderRadius: BorderRadius.circular(16),
         ),
         height: 45,

@@ -36,7 +36,7 @@ class _ChatBubble extends StatelessWidget {
         margin: EdgeInsets.all(15),
         child: Text(
           massage.massage,
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
     );
@@ -51,7 +51,7 @@ class MyChatBubble extends StatelessWidget {
     return _ChatBubble(
       massage: massage,
       alignment: AlignmentGeometry.bottomLeft,
-      color: Color(0xff324D69),
+      color: Color(0xff47A349),
       bottomRight: 30,
     );
   }
@@ -65,7 +65,7 @@ class FriendChatBubble extends StatelessWidget {
     return _ChatBubble(
       massage: massage,
       alignment: AlignmentGeometry.bottomRight,
-      color: Color(0xff006488),
+      color: Theme.of(context).colorScheme.tertiary,
       bottomLeft: 30,
     );
   }
